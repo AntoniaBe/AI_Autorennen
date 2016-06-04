@@ -456,7 +456,7 @@ public class Autorennen_PoV extends AI {
 		Vector2f rv = Vector2f.sub(checkpoint, pos, null);
 		
 //		//für Abstandsberechnungen
-		float abs = (float) rv.length();
+		
 		
 		//TODO: Prüfe ob Weg zum Ziel überhaupt versperrt!!
 		
@@ -526,6 +526,7 @@ public class Autorennen_PoV extends AI {
 		float degree = (float)Math.atan2(rv.y, rv.x);
 //		//für Winkelberechnungen
 		float diff = degree - o;
+		float abs = (float) rv.length();
 		
 		System.out.println("Degree pos, cp:" + degree);
 		System.out.println("Angular diff between degree(pos,cp) and orientation:" + diff);

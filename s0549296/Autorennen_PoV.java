@@ -423,6 +423,16 @@ public class Autorennen_PoV extends AI {
 //					glVertex2f(width, i*deltaY);
 //				glEnd();
 //		}
+		
+		if(currentPath!=null){
+			for(int i = 0; i+1<currentPath.size(); i++){
+				glBegin(GL_LINES);
+				glColor3f(0,0,1);
+				glVertex2f(currentPath.get(i).x, currentPath.get(i).y);
+				glVertex2f(currentPath.get(i+1).x, currentPath.get(i+1).y);
+				glEnd();
+			}
+		}
 	}
 	
 
@@ -439,14 +449,14 @@ public class Autorennen_PoV extends AI {
 		float x = info.getX();
 		float y = info.getY();
 		Vector2f pos = new Vector2f(x, y);
+		Vector2f velocity = info.getVelocity();
 //		
-		float rvX = (float)cx - x;
-		float rvY = (float) cy - y;
-		float degree = (float)Math.atan2(rvY, rvX);
-//		//für Winkelberechnungen
-		float diff = degree - o;
+//		float rvX = (float)cx - x;
+//		float rvY = (float) cy - y;
+		Vector2f rv = Vector2f.sub(checkpoint, pos, null);
+		
 //		//für Abstandsberechnungen
-		float abs = (float) Math.sqrt((rvX*rvX)+(rvY*rvY));
+		float abs = (float) rv.length();
 		
 		//TODO: Prüfe ob Weg zum Ziel überhaupt versperrt!!
 		
@@ -470,6 +480,10 @@ public class Autorennen_PoV extends AI {
 //			currentPath = null;
 //		}
 //		}
+		
+		
+
+		
 		
 		//Falls direkter Weg frei
 		if(graph.isFreespace(new Node2(pos), new Node2(checkpoint))){
@@ -497,28 +511,49 @@ public class Autorennen_PoV extends AI {
 					}
 				}
 				if(pathIndex<currentPath.size()){
-					System.out.println("Pos dist to MP:" + Vector2f.sub(currentPath.get(pathIndex), pos, null).length());
-					System.out.println("deltaX:" + deltaX);
-					System.out.println(currentPath.get(pathIndex));
-					System.out.println(pathIndex);
+//					System.out.println("Pos dist to MP:" + Vector2f.sub(currentPath.get(pathIndex), pos, null).length());
+//					System.out.println("deltaX:" + deltaX);
+//					System.out.println(currentPath.get(pathIndex));
+//					System.out.println(pathIndex);
 					action = seek(pos, currentPath.get(pathIndex));
+					rv = Vector2f.sub(currentPath.get(pathIndex), pos, null);
+					
 				}else{
 					action = seek(pos, checkpoint);
 				}
 			}
 		}
+		float degree = (float)Math.atan2(rv.y, rv.x);
+//		//für Winkelberechnungen
+		float diff = degree - o;
+		
+		System.out.println("Degree pos, cp:" + degree);
+		System.out.println("Angular diff between degree(pos,cp) and orientation:" + diff);
 		
 		
-	
-		if(Math.abs(action[1])<0.1& abs>30){
-			action[0] = info.getMaxAcceleration();
-//		}else if(abs<=30 & abs>2 & Math.abs(action[1])<0.1){
-//			action[0] = info.getMaxAcceleration();
-		}else if(Math.abs(action[1])>0.1&Math.abs(action[1])<=0.5){
-			action[0] = 0.01f;
-		}else if(Math.abs(action[1])>0.5){
+		//Kreisen vermeiden
+		if(Math.abs(diff)<0.1f){
+			if(abs>20){
+				action[0] = info.getMaxAcceleration();
+			}
+		}else{
 			action[0] = 0.01f;
 		}
+		
+//		if(Math.abs(action[1])<0.1& abs>30){
+//		if(Math.abs(action[1])<0.1){
+//			action[0] = info.getMaxAcceleration();
+////		}else if(abs<=30 & abs>2 & Math.abs(action[1])<0.1){
+////			action[0] = info.getMaxAcceleration();
+//		}else if(Math.abs(action[1])>0.1&Math.abs(action[1])<=0.5){
+//			action[0] = 0.01f;
+//		}else if(Math.abs(action[1])>0.5){
+//			action[0] = 0.01f;
+//		}
+		
+		System.out.println("Throttle:" + action[0]);
+		System.out.println("Steering:" + action[1]);
+
 //
 //		//berechnetes throttle und steering anwenden
 		return new DriverAction(action[0], action[1]);

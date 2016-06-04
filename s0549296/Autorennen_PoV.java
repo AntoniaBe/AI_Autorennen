@@ -506,7 +506,7 @@ public class Autorennen_PoV extends AI {
 				pathIndex=0;
 			}else{
 				if(pathIndex<currentPath.size()){
-					if(Vector2f.sub(currentPath.get(pathIndex), pos, null).length()<(20)){
+					if(Vector2f.sub(currentPath.get(pathIndex), pos, null).length()<(10)){
 						pathIndex++;
 					}
 				}

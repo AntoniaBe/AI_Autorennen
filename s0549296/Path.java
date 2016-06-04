@@ -13,6 +13,7 @@ public class Path {
 	
 	private ArrayList<Vector2f> path;
 	private Graph graph;
+	private static final float PATH_POINT_DISTANCE = 50f;
 	
 	public Path(){
 		
@@ -100,6 +101,13 @@ public class Path {
 		}
 		return reversedPath;
 	}
+//	private ArrayList<Vector2f> betterPath(){
+//		ArrayList<Vector2f> newPath;
+//		for(int i = 0; i+1< path.size(); i++){
+//			path.get(i);
+//		}
+//	}
+	
 	private int searchMinimum(ArrayList<Node2> openList){
 		int index = -1;
 		float min = Float.MAX_VALUE;

@@ -28,7 +28,7 @@ public class Autorennen_PoV extends AI {
 	final static float TOLERANCE = 0.01f;
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
-	final static float WISH_TIME_D = 5f;
+	final static float WISH_TIME_D = 20f;
 	final static float DESTINATION_RADIUS = 0.05f;
 	final static float DECELERATING_RADIUS = 30f; //zuvor:10
 	
@@ -526,6 +526,7 @@ public class Autorennen_PoV extends AI {
 		float degree = (float)Math.atan2(rv.y, rv.x);
 //		//für Winkelberechnungen
 		float diff = degree - o;
+		diff = checkDegree(diff);
 		float abs = (float) rv.length();
 		
 		System.out.println("Degree pos, cp:" + degree);
@@ -533,12 +534,12 @@ public class Autorennen_PoV extends AI {
 		
 		
 		//Kreisen vermeiden
-		if(Math.abs(diff)<0.1f){
-			if(abs>20){
+		if(Math.abs(diff)<0.05f){
+			if(abs>50){
 				action[0] = info.getMaxAcceleration();
 			}
 		}else{
-			action[0] = 0.01f;
+			action[0] = 0.02f;//0.01f;
 		}
 		
 //		if(Math.abs(action[1])<0.1& abs>30){

@@ -200,13 +200,12 @@ public class Autorennen_PoV extends AI {
 		Vector2f rv = Vector2f.sub(ziel, start, null);
 		float abs = rv.length();
 		if(abs<DESTINATION_RADIUS){
-			return -10f;
+			return 0;
 		}else{
 			//Abstand(Start, Ziel) < Abbremsradius
 			float wunschgeschw;
 			if(abs<DECELERATING_RADIUS){
-//				wunschgeschw = abs * info.getMaxVelocity()/DECELERATING_RADIUS;
-				wunschgeschw = 5f;
+				wunschgeschw = abs * info.getMaxVelocity()/DECELERATING_RADIUS;
 			}else{
 				wunschgeschw = info.getMaxVelocity();
 			}

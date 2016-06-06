@@ -1,8 +1,10 @@
 package s0549296;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 import org.lwjgl.util.vector.Vector2f;
@@ -11,6 +13,7 @@ public class Path {
 	
 	private ArrayList<Vector2f> path;
 	private Graph graph;
+	private static final float PATH_POINT_DISTANCE = 50f;
 	
 	public Path(){
 		
@@ -86,6 +89,7 @@ public class Path {
 		}
 	}
 	
+	
 	private ArrayList<Vector2f> reversePath(){
 		Stack<Vector2f> stack = new Stack<Vector2f>();
 		ArrayList<Vector2f> reversedPath = new ArrayList<Vector2f>(); 
@@ -97,6 +101,12 @@ public class Path {
 		}
 		return reversedPath;
 	}
+//	private ArrayList<Vector2f> betterPath(){
+//		ArrayList<Vector2f> newPath;
+//		for(int i = 0; i+1< path.size(); i++){
+//			path.get(i);
+//		}
+//	}
 	
 	private int searchMinimum(ArrayList<Node2> openList){
 		int index = -1;
@@ -131,9 +141,14 @@ public class Path {
 				currentN.addNode(new Edge2(endN, weight));
 			}
 		}
+//		graph.addNode(endN);
+		
 	}
-	
 	public ArrayList<Vector2f> getPath(){
 		return path;
 	}
+
+
+	
+	
 }

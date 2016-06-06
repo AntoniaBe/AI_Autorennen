@@ -28,7 +28,7 @@ public class Autorennen_PoV extends AI {
 	final static float TOLERANCE = 0.01f;
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
-	final static float WISH_TIME_D = 20f;
+	final static float WISH_TIME_D = 1f;
 	final static float DESTINATION_RADIUS = 10f;
 	final static float DECELERATING_RADIUS = 50f; //zuvor:10
 	
@@ -105,6 +105,7 @@ public class Autorennen_PoV extends AI {
 				currentPath = null;
 			}
 			if(currentCP.x != info.getCurrentCheckpoint().x | currentCP.y != info.getCurrentCheckpoint().y){
+//				System.out.println(Vector2f.sub(new Vector2f(info.getCurrentCheckpoint().x , info.getCurrentCheckpoint().y), new Vector2f(currentCP.x, currentCP.y), null).length());
 				currentPath = null;
 			}
 			if(currentPath==null){
@@ -117,7 +118,7 @@ public class Autorennen_PoV extends AI {
 				pathIndex=0;
 			}else{
 				if(pathIndex<currentPath.size()){
-					if(Vector2f.sub(currentPath.get(pathIndex), pos, null).length()<(10)){
+					if(Vector2f.sub(currentPath.get(pathIndex), pos, null).length()<(20)){
 						pathIndex++;
 					}
 				}
@@ -148,7 +149,7 @@ public class Autorennen_PoV extends AI {
 				action[0] = info.getMaxAcceleration();
 			}
 		}else{
-			action[0] = 0.02f;//0.01f;
+			action[0] = 0.03f;//0.01f;
 		}
 		
 //		if(Math.abs(action[1])<0.1& abs>30){
@@ -199,12 +200,13 @@ public class Autorennen_PoV extends AI {
 		Vector2f rv = Vector2f.sub(ziel, start, null);
 		float abs = rv.length();
 		if(abs<DESTINATION_RADIUS){
-			return 0;
+			return -10f;
 		}else{
 			//Abstand(Start, Ziel) < Abbremsradius
 			float wunschgeschw;
 			if(abs<DECELERATING_RADIUS){
-				wunschgeschw = abs * info.getMaxVelocity()/DECELERATING_RADIUS;
+//				wunschgeschw = abs * info.getMaxVelocity()/DECELERATING_RADIUS;
+				wunschgeschw = 5f;
 			}else{
 				wunschgeschw = info.getMaxVelocity();
 			}

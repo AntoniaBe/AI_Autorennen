@@ -133,7 +133,7 @@ public class Autorennen_PoV extends AI {
 		}
 		
 		float degree = (float)Math.atan2(rv.y, rv.x);
-		float diff = degree - o;
+		float diff = degree - (float) Math.atan2(velocity.y, velocity.x);
 		diff = checkDegree(diff);
 		float abs = (float) rv.length();
 		
@@ -200,7 +200,8 @@ public class Autorennen_PoV extends AI {
 		Vector2f rv = Vector2f.sub(ziel, start, null);
 		float abs = rv.length();
 		if(abs<DESTINATION_RADIUS){
-			return 0;
+//			return 0;
+			return (float) ((abs*info.getMaxVelocity()/DESTINATION_RADIUS) - info.getVelocity().length());
 		}else{
 			//Abstand(Start, Ziel) < Abbremsradius
 			float wunschgeschw;
@@ -210,9 +211,7 @@ public class Autorennen_PoV extends AI {
 				wunschgeschw = info.getMaxVelocity();
 			}
 			//Beschleunigung
-			float gx = info.getVelocity().x;
-			float gy = info.getVelocity().y;
-			return (float) ((wunschgeschw - Math.sqrt((gx*gx) + (gy*gy)))/WISH_TIME_D);
+			return (float) ((wunschgeschw - info.getVelocity().length())/WISH_TIME_D);
 		}
 	}
 	

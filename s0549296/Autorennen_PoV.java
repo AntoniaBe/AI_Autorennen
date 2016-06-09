@@ -107,7 +107,6 @@ public class Autorennen_PoV extends AI {
 				betterPath = null;
 			}
 			if(currentCP.x != info.getCurrentCheckpoint().x | currentCP.y != info.getCurrentCheckpoint().y){
-//				System.out.println(Vector2f.sub(new Vector2f(info.getCurrentCheckpoint().x , info.getCurrentCheckpoint().y), new Vector2f(currentCP.x, currentCP.y), null).length());
 				currentPath = null;
 				betterPath = null;
 			}
@@ -141,11 +140,6 @@ public class Autorennen_PoV extends AI {
 		diff = checkDegree(diff);
 		float abs = (float) rv.length();
 		
-		System.out.println("Max Velocity: " +info.getMaxVelocity());
-		System.out.println("Max Acceleration: " + info.getMaxAcceleration());
-		System.out.println("Max Angular Velocity: " + info.getMaxAngularVelocity());
-		System.out.println("Max Angular Acceleration: " + info.getMaxAngularAcceleration());
-		
 		
 		//Kreisen vermeiden
 		if(Math.abs(diff)<0.05f){
@@ -153,22 +147,8 @@ public class Autorennen_PoV extends AI {
 				action[0] = info.getMaxAcceleration();
 			}
 		}else{
-			action[0] = 0.03f;//0.01f;
+			action[0] = 0.03f;
 		}
-		
-//		if(Math.abs(action[1])<0.1& abs>30){
-//		if(Math.abs(action[1])<0.1){
-//			action[0] = info.getMaxAcceleration();
-////		}else if(abs<=30 & abs>2 & Math.abs(action[1])<0.1){
-////			action[0] = info.getMaxAcceleration();
-//		}else if(Math.abs(action[1])>0.1&Math.abs(action[1])<=0.5){
-//			action[0] = 0.01f;
-//		}else if(Math.abs(action[1])>0.5){
-//			action[0] = 0.01f;
-//		}
-		
-//		System.out.println("Throttle:" + action[0]);
-//		System.out.println("Steering:" + action[1]);
 
 //		//berechnetes throttle und steering anwenden
 		return new DriverAction(action[0], action[1]);
@@ -198,9 +178,7 @@ public class Autorennen_PoV extends AI {
 			action[0] = arrive(start, dest);
 		}else{
 			action[0]=info.getMaxAcceleration();
-
 		}
-		
 		action[1] = align(diff);
 		
 		return action;
@@ -211,7 +189,6 @@ public class Autorennen_PoV extends AI {
 		float abs = rv.length();
 		if(abs<DESTINATION_RADIUS){
 			return 0;
-//			return (float) ((abs*info.getMaxVelocity()/DESTINATION_RADIUS) - info.getVelocity().length());
 		}else{
 			//Abstand(Start, Ziel) < Abbremsradius
 			float wunschgeschw;

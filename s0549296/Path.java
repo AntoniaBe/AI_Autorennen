@@ -84,7 +84,6 @@ public class Path {
 				current = current.getBefore();
 			}
 			path = reversePath();
-//			path = betterPath();
 		}
 	}
 	

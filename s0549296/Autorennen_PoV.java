@@ -133,7 +133,7 @@ public class Autorennen_PoV extends AI {
 		}
 		
 		float degree = (float)Math.atan2(rv.y, rv.x);
-		float diff = degree - (float) Math.atan2(velocity.y, velocity.x);
+		float diff = degree - o;
 		diff = checkDegree(diff);
 		float abs = (float) rv.length();
 		

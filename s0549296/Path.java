@@ -11,7 +11,7 @@ public class Path {
 	
 	private ArrayList<Vector2f> path;
 	private Graph graph;
-	private static final float MAX_SEGMENT_LENGTH = 50f;
+	private static final float MAX_SEGMENT_LENGTH = 35f;
 	
 	public Path(){
 		
@@ -88,32 +88,32 @@ public class Path {
 		}
 	}
 	
-//	private ArrayList<Vector2f> betterPath(){
-//		ArrayList<Vector2f> newPath = new ArrayList<Vector2f>();
-//		for(int i = 0; i+1< path.size(); i++){
-//			newPath.add(path.get(i));
-//			Vector2f rv = Vector2f.sub(path.get(i+1), path.get(i), null);
-//			newPath = divideSegment(newPath, rv);
-//		}
-//		newPath.add(path.get(path.size()-1));
-//		return newPath;
-//	}
+	public ArrayList<Vector2f> betterPath(ArrayList<Vector2f> path){
+		ArrayList<Vector2f> newPath = new ArrayList<Vector2f>();
+		for(int i = 0; i+1< path.size(); i++){
+			newPath.add(path.get(i));
+			Vector2f rv = Vector2f.sub(path.get(i+1), path.get(i), null);
+			newPath = divideSegment(newPath, rv);
+		}
+		newPath.add(path.get(path.size()-1));
+		return newPath;
+	}
 	
-//	private ArrayList<Vector2f> divideSegment(ArrayList<Vector2f> newPath, Vector2f rv) {
-//		int index = 0;
-//		while(rv.length()>MAX_SEGMENT_LENGTH){
-//			rv = (Vector2f) rv.scale(0.5f);
-//			index++;
-//		}
-//		int num = 0;
-//		for(int i = 0; i < index; i++){
-//			num += Math.pow(2, i);
-//		}
-//		for(int i = 0; i< num; i++){
-//			newPath.add(Vector2f.add(newPath.get(newPath.size()-1), rv, null));
-//		}
-//		return newPath;
-//	}
+	private ArrayList<Vector2f> divideSegment(ArrayList<Vector2f> newPath, Vector2f rv) {
+		int index = 0;
+		while(rv.length()>MAX_SEGMENT_LENGTH){
+			rv = (Vector2f) rv.scale(0.5f);
+			index++;
+		}
+		int num = 0;
+		for(int i = 0; i < index; i++){
+			num += Math.pow(2, i);
+		}
+		for(int i = 0; i< num; i++){
+			newPath.add(Vector2f.add(newPath.get(newPath.size()-1), rv, null));
+		}
+		return newPath;
+	}
 	
 	private ArrayList<Vector2f> reversePath(){
 		Stack<Vector2f> stack = new Stack<Vector2f>();

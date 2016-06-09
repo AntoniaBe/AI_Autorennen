@@ -28,8 +28,8 @@ public class Autorennen_PoV extends AI {
 	final static float TOLERANCE = 0.01f;
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
-	final static float WISH_TIME_D = 1f;
-	final static float DESTINATION_RADIUS = 10f;
+	final static float WISH_TIME_D = 0.1f;
+	final static float DESTINATION_RADIUS = 3f;
 	final static float DECELERATING_RADIUS = 50f; //zuvor:10
 	
 	final static int TILE_NUMBER = 40;
@@ -41,6 +41,7 @@ public class Autorennen_PoV extends AI {
 	private Path path;
 	private int pathIndex=0;
 	private ArrayList<Vector2f> currentPath;
+	private ArrayList<Vector2f> betterPath;
 	private Point currentCP = new Point(-1, -1);
 	
 	public Autorennen_PoV(Info info) {
@@ -98,36 +99,39 @@ public class Autorennen_PoV extends AI {
 		
 		//Falls direkter Weg frei
 		if(graph.isFreespace(new Node2(pos), new Node2(checkpoint))){
-			action = seek(pos, checkpoint);
+			action = seek(pos, checkpoint, true);
 		//Falls direkter Weg versperrt
 		}else{
 			if(ichWurdeZurückgesetzt){
 				currentPath = null;
+				betterPath = null;
 			}
 			if(currentCP.x != info.getCurrentCheckpoint().x | currentCP.y != info.getCurrentCheckpoint().y){
 //				System.out.println(Vector2f.sub(new Vector2f(info.getCurrentCheckpoint().x , info.getCurrentCheckpoint().y), new Vector2f(currentCP.x, currentCP.y), null).length());
 				currentPath = null;
+				betterPath = null;
 			}
 			if(currentPath==null){
 				path.findShortestPath(graph, pos, checkpoint);
 				currentPath = path.getPath();
+				betterPath = path.betterPath(currentPath);
 				if(currentPath==null){
-					action=seek(pos, checkpoint);
+					action=seek(pos, checkpoint, true);
 				}
 				currentCP = new Point(info.getCurrentCheckpoint().x, info.getCurrentCheckpoint().y);
 				pathIndex=0;
 			}else{
-				if(pathIndex<currentPath.size()){
-					if(Vector2f.sub(currentPath.get(pathIndex), pos, null).length()<(20)){
+				if(pathIndex<betterPath.size()){
+					if(Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(20)){
 						pathIndex++;
 					}
 				}
-				if(pathIndex<currentPath.size()){
-					action = seek(pos, currentPath.get(pathIndex));
-					rv = Vector2f.sub(currentPath.get(pathIndex), pos, null);
+				if(pathIndex<betterPath.size()){
+					action = seek(pos, betterPath.get(pathIndex), currentPath.contains(betterPath.get(pathIndex)));
+					rv = Vector2f.sub(betterPath.get(pathIndex), pos, null);
 					
 				}else{
-					action = seek(pos, checkpoint);
+					action = seek(pos, checkpoint, true);
 				}
 			}
 		}
@@ -180,7 +184,7 @@ public class Autorennen_PoV extends AI {
 		return diff;
 	}
 	
-	private float[] seek(Vector2f start, Vector2f dest){
+	private float[] seek(Vector2f start, Vector2f dest, boolean arrive){
 		float[] action = new float[2];
 		
 		float rvX = (float)dest.x - start.x;
@@ -190,7 +194,13 @@ public class Autorennen_PoV extends AI {
 		float diff = degree - info.getOrientation();
 		
 		diff = checkDegree(diff);
-		action[0] = arrive(start, dest);
+		if(arrive){
+			action[0] = arrive(start, dest);
+		}else{
+			action[0]=info.getMaxAcceleration();
+
+		}
+		
 		action[1] = align(diff);
 		
 		return action;
@@ -200,8 +210,8 @@ public class Autorennen_PoV extends AI {
 		Vector2f rv = Vector2f.sub(ziel, start, null);
 		float abs = rv.length();
 		if(abs<DESTINATION_RADIUS){
-//			return 0;
-			return (float) ((abs*info.getMaxVelocity()/DESTINATION_RADIUS) - info.getVelocity().length());
+			return 0;
+//			return (float) ((abs*info.getMaxVelocity()/DESTINATION_RADIUS) - info.getVelocity().length());
 		}else{
 			//Abstand(Start, Ziel) < Abbremsradius
 			float wunschgeschw;

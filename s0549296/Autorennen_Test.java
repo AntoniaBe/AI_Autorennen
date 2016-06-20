@@ -15,7 +15,7 @@ import lenz.htw.ai4g.ai.AI;
 import lenz.htw.ai4g.ai.DriverAction;
 import lenz.htw.ai4g.ai.Info;
 
-public class Autorennen_PoV extends AI {
+public class Autorennen_Test extends AI {
 	final static float MAX_SEE_AHEAD = 20f;
 	final static float MAX_AVOIDANCE_FORCE = 10f;
 	final static float TOLERANCE = 0.01f;
@@ -37,17 +37,16 @@ public class Autorennen_PoV extends AI {
 	private ArrayList<Vector2f> betterPath;
 	private Point currentCP = new Point(-1, -1);
 	
-	public Autorennen_PoV(Info info) {
+	public Autorennen_Test(Info info) {
 		super(info);
-		Area obstMap = new Area();
-		Polygon[] obst = info.getTrack().getObstacles();
-		
+		Area map = new Area();
+		Polygon[] polys = info.getTrack().getObstacles();
 		
 		//Bestimmt Obstacles in map
-				for(int i = 0 ; i < obst.length; i++){
-					obstMap.add(new Area(obst[i]));
+				for(int i = 0 ; i < polys.length; i++){
+					map.add(new Area(polys[i]));
 				}
-		graph = new Graph(obst, obstMap);
+		graph = new Graph(polys, map);
 		path = new Path();
 	}
 
@@ -142,7 +141,7 @@ public class Autorennen_PoV extends AI {
 		}
 
 //		//berechnetes throttle und steering anwenden
-		return new DriverAction(action[0], action[1]);
+		return new DriverAction(-20, 0);
 	}
 	
 	

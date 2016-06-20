@@ -3,6 +3,7 @@ package s0549296;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.awt.geom.Area;
+import java.awt.geom.Point2D;
 import java.awt.Point;
 
 
@@ -15,15 +16,15 @@ import lenz.htw.ai4g.ai.AI;
 import lenz.htw.ai4g.ai.DriverAction;
 import lenz.htw.ai4g.ai.Info;
 
-public class Autorennen_PoV extends AI {
+public class Autorennen_PoV2 extends AI {
 	final static float MAX_SEE_AHEAD = 20f;
 	final static float MAX_AVOIDANCE_FORCE = 10f;
 	final static float TOLERANCE = 0.01f;
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
 	final static float WISH_TIME_D = 0.1f;
-	final static float DESTINATION_RADIUS = 3f;
-	final static float DECELERATING_RADIUS = 50f; //zuvor:10
+	final static float DESTINATION_RADIUS = 2f;
+	final static float DECELERATING_RADIUS = 20f; //zuvor:10
 	
 	final static int TILE_NUMBER = 40;
 	//Graph
@@ -37,16 +38,32 @@ public class Autorennen_PoV extends AI {
 	private ArrayList<Vector2f> betterPath;
 	private Point currentCP = new Point(-1, -1);
 	
-	public Autorennen_PoV(Info info) {
+	//Fast & Slowzones
+	Area fzMap;
+	Area szMap;
+	
+	public Autorennen_PoV2(Info info) {
 		super(info);
 		Area obstMap = new Area();
+		fzMap = new Area();
+		szMap = new Area();
 		Polygon[] obst = info.getTrack().getObstacles();
+		Polygon[] fz = info.getTrack().getFastZones();
+		Polygon[] sz = info.getTrack().getSlowZones();
 		
 		
 		//Bestimmt Obstacles in map
-				for(int i = 0 ; i < obst.length; i++){
-					obstMap.add(new Area(obst[i]));
-				}
+		for(int i = 0 ; i < obst.length; i++){
+			obstMap.add(new Area(obst[i]));
+		}
+		//Fülle Fastzones in Map
+		for(int i=0; i< fz.length; i++){
+			fzMap.add(new Area(fz[i]));
+		}
+		//Fülle Slowzones in Map
+		for(int i =0; i< sz.length; i++){
+			szMap.add(new Area(sz[i]));
+		}
 		graph = new Graph(obst, obstMap);
 		path = new Path();
 	}
@@ -54,7 +71,7 @@ public class Autorennen_PoV extends AI {
 
 	@Override
 	public String getName() {
-		return "BURNING DESIRE5";
+		return "BURNING DESIRE6";
 	}
 	
 	@Override
@@ -139,6 +156,15 @@ public class Autorennen_PoV extends AI {
 			}
 		}else{
 			action[0] = 0.03f;
+		}
+		
+		//In Fastzone maximaleGeschwindigkeit
+		if(fzMap.contains(pos.x, pos.y)) {
+			action[0] = info.getMaxAcceleration();
+		}
+		if(szMap.contains(pos.x, pos.y)){
+			action[0] = info.getMaxAcceleration();
+			action[1] = 0;
 		}
 
 //		//berechnetes throttle und steering anwenden

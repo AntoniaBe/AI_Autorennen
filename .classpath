@@ -6,11 +6,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Veronika/Desktop/Studium/AI/Autorennen/ai.jar" sourcepath="C:/Users/Antonia/Downloads/NochNichtAufFestplatte/4.Semester/AI FOR GAMES/ai.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Veronika/Desktop/Studium/AI/Autorennen/ai_libs.jar">
+	<classpathentry kind="lib" path="C:/Users/Veronika/Desktop/Studium/AI/AI_Ue2_Berger_Bertels.jar"/>
+	<classpathentry kind="lib" path="ai_libs.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Veronika/Desktop/Studium/AI/Autorennen/native"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Autorennen/native"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="ai.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

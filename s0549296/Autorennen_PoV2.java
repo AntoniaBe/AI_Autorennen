@@ -18,8 +18,8 @@ public class Autorennen_PoV2 extends AI {
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
 	final static float WISH_TIME_D = 0.1f;
-	final static float DESTINATION_RADIUS = 7f;
-	final static float DECELERATING_RADIUS = 100f; //zuvor:10
+	final static float DESTINATION_RADIUS = 5f;
+	final static float DECELERATING_RADIUS = 50f; //zuvor:10
 	final static float PATH_POINT_RADIUS = 20f;
 	final static float FZ_PATH_POINT_RADIUS = 40f;
 
@@ -94,7 +94,6 @@ public class Autorennen_PoV2 extends AI {
 				path.findShortestPath(pos, checkpoint);
 				currentPath = path.getPath();
 				betterPath = currentPath;
-//						path.betterPath(currentPath);
 				if(currentPath==null){
 					action=seek(pos, checkpoint, true);
 				}
@@ -105,9 +104,6 @@ public class Autorennen_PoV2 extends AI {
 					if((graph.getFastMap().contains(betterPath.get(pathIndex).x, betterPath.get(pathIndex).y) & Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(FZ_PATH_POINT_RADIUS)) | Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(PATH_POINT_RADIUS)){
 						pathIndex++;
 					}
-//					if(Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(20)){
-//						
-//					}
 				}
 				if(pathIndex<betterPath.size()){
 					action = seek(pos, betterPath.get(pathIndex), currentPath.contains(betterPath.get(pathIndex)));
@@ -126,8 +122,8 @@ public class Autorennen_PoV2 extends AI {
 		
 		
 		//Kreisen vermeiden
-		if(Math.abs(diff)<0.05f){
-			if(abs>100){
+		if(Math.abs(diff)<0.1f){
+			if(abs>50){
 				action[0] = info.getMaxAcceleration();
 			}
 		}

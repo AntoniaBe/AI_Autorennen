@@ -26,7 +26,7 @@ public class Graph {
 	private static final float SZ_SCALE = 20;
 	private static final float FZ_SCALE = 5;
 	
-	private static final float SZ_WEIGHT = 5;
+	private static final float SZ_WEIGHT = 100;
 	private static final float FZ_WEIGHT = 0.5f;
 
 	private static final float MIDPOINT_SCALE = 15;
@@ -171,8 +171,10 @@ public class Graph {
 			nodes.add(new Node(newPoint, type));
 			
 		}
-		if(!obstacleMap.contains(otherPoint.x, otherPoint.y)){
-			nodes.add(new Node(otherPoint, type));
+		if(otherPoint != null){
+			if(!obstacleMap.contains(otherPoint.x, otherPoint.y)){
+				nodes.add(new Node(otherPoint, type));
+			}
 		}
 
 	}

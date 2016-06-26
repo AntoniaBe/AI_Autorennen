@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class Path {
 	
 	private ArrayList<Vector2f> path;
+	private ArrayList<Node> nodePath;
 	private Graph graph;
 	private static final float MAX_SEGMENT_LENGTH = 35f;
 	
@@ -22,6 +23,7 @@ public class Path {
 	public void findShortestPath(Vector2f start, Vector2f end){
 		//Initialize start and end node
 		path = new ArrayList<Vector2f>();
+		nodePath = new ArrayList<Node>();
 		Node startN = new Node(start);
 		Node endN = new Node(end);
 		startN.setEstimatedTotalCost(calcHeuristic(startN, endN));
@@ -78,12 +80,15 @@ public class Path {
 		
 		if(current!=endN){
 			path=null;
+			nodePath = null;
 		}else{
 			while(current!=startN){
 				path.add(new Vector2f(current.getPoint().x, current.getPoint().y));
+				nodePath.add(current);
 				current = current.getBefore();
 			}
 			path = reversePath();
+			nodePath = reverseNodePath();
 		}
 	}
 	
@@ -119,6 +124,18 @@ public class Path {
 		ArrayList<Vector2f> reversedPath = new ArrayList<Vector2f>(); 
 		for(int i = 0; i<path.size(); i++){
 			stack.push(path.get(i));
+		}
+		while(!stack.isEmpty()){
+			reversedPath.add(stack.pop());
+		}
+		return reversedPath;
+	}
+	
+	private ArrayList<Node> reverseNodePath(){
+		Stack<Node> stack = new Stack<Node>();
+		ArrayList<Node> reversedPath = new ArrayList<Node>(); 
+		for(int i = 0; i<nodePath.size(); i++){
+			stack.push(nodePath.get(i));
 		}
 		while(!stack.isEmpty()){
 			reversedPath.add(stack.pop());

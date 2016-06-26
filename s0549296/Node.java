@@ -7,11 +7,24 @@ import org.lwjgl.util.vector.Vector2f;
 public class Node implements Comparable<Node> {
 	
 	private Vector2f point;
+	private String type;
 	private float estimatedTotalCost;
 	private float currentCost = Integer.MAX_VALUE;
 	private LinkedList<Edge2> adjList;
 	private Node before;
 
+	
+	public Node(Vector2f point) {
+		this.point = point;
+		adjList = new LinkedList<Edge2>();
+	}
+	
+	public Node(Vector2f point, String type){
+		this.point = point;
+		this.type = type;
+		adjList = new LinkedList<Edge2>();
+	}
+	
 	public float getEstimatedTotalCost() {
 		return estimatedTotalCost;
 	}
@@ -19,10 +32,13 @@ public class Node implements Comparable<Node> {
 	public void setEstimatedTotalCost(float estimatedTotalCost) {
 		this.estimatedTotalCost = estimatedTotalCost;
 	}
+	
+	public String getType() {
+		return type;
+	}
 
-	public Node(Vector2f point) {
-		this.point = point;
-		adjList = new LinkedList<Edge2>();
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public float getCurrentCost() {

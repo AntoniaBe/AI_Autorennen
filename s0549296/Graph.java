@@ -22,12 +22,14 @@ public class Graph {
 	private Area fastMap;
 	private ArrayList<ArrayList<Line2D>> edges;
 
-	private static final float O_SCALE = 10;
+	private static final float O_SCALE = 20;
 	private static final float SZ_SCALE = 20;
 	private static final float FZ_SCALE = 5;
 	
 	private static final float SZ_WEIGHT = 5;
 	private static final float FZ_WEIGHT = 0.5f;
+
+	private static final float MIDPOINT_SCALE = 15;
 
 	public Graph(Track t) {
 		// Entnehme Track alle wichtigen Elemente für den Graphen
@@ -147,21 +149,30 @@ public class Graph {
 		Vector2f toMp = Vector2f.sub(mp, currentP, null).normalise(null);
 
 		Vector2f newPoint;
+		Vector2f otherPoint = null;
+		String type;
 		// Obstacle
 		if (num == 0) {
 			newPoint = Vector2f.add(currentP, (Vector2f) toMp.negate(null).scale(O_SCALE), null);
+			type = "obstacle";
 			// Slowzone
 		} else if (num == 1) {
 			newPoint = Vector2f.add(currentP, (Vector2f) toMp.negate(null).scale(SZ_SCALE), null);
-
+			otherPoint = Vector2f.add(Vector2f.add(currentP, (Vector2f) fromC.scale(0.5f), null),(Vector2f) new Vector2f(toNext.y, - toNext.x).normalise(null).scale(MIDPOINT_SCALE), null);
+			type = "slowzone";
 			// Fastzone
 		} else {
-			newPoint = Vector2f.add(currentP, (Vector2f) toMp.scale(FZ_SCALE), null);
+			newPoint = Vector2f.add(currentP, (Vector2f) toMp.negate(null).scale(FZ_SCALE), null);
+			type  = "fastzone";
 		}
 
 		// Füge dem Graphen hinzu, falls Knoten nicht in einem Hindernis liegt
 		if (!obstacleMap.contains(newPoint.x, newPoint.y)) {
-			nodes.add(new Node(newPoint));
+			nodes.add(new Node(newPoint, type));
+			
+		}
+		if(!obstacleMap.contains(otherPoint.x, otherPoint.y)){
+			nodes.add(new Node(otherPoint, type));
 		}
 
 	}

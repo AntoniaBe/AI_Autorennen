@@ -26,7 +26,7 @@ public class Graph {
 
 	private static final float O_SCALE = 20;
 	private static final float SZ_SCALE = 20;
-	private static final float FZ_SCALE = 5;
+	private static final float FZ_SCALE = 10;
 	
 	private static final float SZ_WEIGHT = 100;
 	private static final float FZ_WEIGHT = 0.5f;
@@ -102,9 +102,21 @@ public class Graph {
 				for (int p = 0; p < element.npoints; p++) {
 					points[p] = new Vector2f(xCoords[p], yCoords[p]);
 				}
+				if(j == 2)
+					addMidpoint(points);
 				addNodes(points, j);
 			}
 		}
+	}
+
+	private void addMidpoint(Vector2f[] points) {
+		Vector2f rv = Vector2f.sub(points[2], points[0], null);
+		Vector2f midpoint = Vector2f.add(points[0], (Vector2f) rv.scale(0.5f), null);
+		
+		if(!obstacleMap.contains(midpoint.x, midpoint.y)){
+			nodes.add(new Node(midpoint, "fastzone"));
+		}
+		
 	}
 
 	private void addNodes(Vector2f[] points, int num) {

@@ -143,7 +143,7 @@ public class Autorennen_PoV2 extends AI {
 	private float checkDegree(float diff){
 		if(diff > Math.PI){
 			diff = (float) ((diff - 2 * Math.PI));
-		}else if ( diff < (-1)*( Math.PI)){
+		}else if ( diff < -Math.PI){
 			diff = (float) ((diff + 2 * Math.PI));
 		}
 		return diff;

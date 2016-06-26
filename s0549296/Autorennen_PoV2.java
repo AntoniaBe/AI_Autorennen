@@ -1,14 +1,9 @@
 package s0549296;
 
-import java.awt.Polygon;
+
 import java.util.ArrayList;
-import java.awt.geom.Area;
-import java.awt.geom.Point2D;
 import java.awt.Point;
 
-
-//import org.lwjgl.input.Keyboard;
-//import org.lwjgl.util.Point;
 import org.lwjgl.util.vector.Vector2f;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -23,49 +18,24 @@ public class Autorennen_PoV2 extends AI {
 	final static float DECELERATING_DEGREE = 1.5f;
 	final static float WISH_TIME_R = 0.5f;
 	final static float WISH_TIME_D = 0.1f;
-	final static float DESTINATION_RADIUS = 2f;
-	final static float DECELERATING_RADIUS = 20f; //zuvor:10
-	
-	final static int TILE_NUMBER = 40;
-	//Graph
-	float deltaX;
-	float deltaY;
+	final static float DESTINATION_RADIUS = 7f;
+	final static float DECELERATING_RADIUS = 100f; //zuvor:10
+
 	
 	private Graph graph;
+
 	private Path path;
 	private int pathIndex=0;
 	private ArrayList<Vector2f> currentPath;
 	private ArrayList<Vector2f> betterPath;
 	private Point currentCP = new Point(-1, -1);
 	
-	//Fast & Slowzones
-	Area fzMap;
-	Area szMap;
 	
 	public Autorennen_PoV2(Info info) {
 		super(info);
-		Area obstMap = new Area();
-		fzMap = new Area();
-		szMap = new Area();
-		Polygon[] obst = info.getTrack().getObstacles();
-		Polygon[] fz = info.getTrack().getFastZones();
-		Polygon[] sz = info.getTrack().getSlowZones();
-		
-		
-		//Bestimmt Obstacles in map
-		for(int i = 0 ; i < obst.length; i++){
-			obstMap.add(new Area(obst[i]));
-		}
-		//Fülle Fastzones in Map
-		for(int i=0; i< fz.length; i++){
-			fzMap.add(new Area(fz[i]));
-		}
-		//Fülle Slowzones in Map
-		for(int i =0; i< sz.length; i++){
-			szMap.add(new Area(sz[i]));
-		}
-		graph = new Graph(obst, obstMap);
-		path = new Path();
+
+		graph = new Graph(info.getTrack());
+		path = new Path(graph);
 	}
 
 
@@ -106,7 +76,7 @@ public class Autorennen_PoV2 extends AI {
 		float o = info.getOrientation();
 		
 		//Falls direkter Weg frei
-		if(graph.isFreespace(new Node2(pos), new Node2(checkpoint))){
+		if(!graph.intersectsObstacle(new Node(pos), new Node(checkpoint)) & !graph.intersectsSlowZone(new Node(pos), new Node(checkpoint))){
 			action = seek(pos, checkpoint, true);
 		//Falls direkter Weg versperrt
 		}else{
@@ -119,9 +89,10 @@ public class Autorennen_PoV2 extends AI {
 				betterPath = null;
 			}
 			if(currentPath==null){
-				path.findShortestPath(graph, pos, checkpoint);
+				path.findShortestPath(pos, checkpoint);
 				currentPath = path.getPath();
-				betterPath = path.betterPath(currentPath);
+				betterPath = currentPath;
+//						path.betterPath(currentPath);
 				if(currentPath==null){
 					action=seek(pos, checkpoint, true);
 				}
@@ -129,7 +100,7 @@ public class Autorennen_PoV2 extends AI {
 				pathIndex=0;
 			}else{
 				if(pathIndex<betterPath.size()){
-					if(Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(20)){
+					if(Vector2f.sub(betterPath.get(pathIndex), pos, null).length()<(40)){
 						pathIndex++;
 					}
 				}
@@ -151,23 +122,19 @@ public class Autorennen_PoV2 extends AI {
 		
 		//Kreisen vermeiden
 		if(Math.abs(diff)<0.05f){
-			if(abs>50){
+			if(abs>100){
 				action[0] = info.getMaxAcceleration();
 			}
-		}else{
+		}
+		else{
 			action[0] = 0.03f;
 		}
 		
 		//In Fastzone maximaleGeschwindigkeit
-		if(fzMap.contains(pos.x, pos.y)) {
+		if(graph.getFastMap().contains(pos.x, pos.y)) {
 			action[0] = info.getMaxAcceleration();
-		}
-		if(szMap.contains(pos.x, pos.y)){
-			action[0] = info.getMaxAcceleration();
-			action[1] = 0;
 		}
 
-//		//berechnetes throttle und steering anwenden
 		return new DriverAction(action[0], action[1]);
 	}
 	

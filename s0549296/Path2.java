@@ -7,30 +7,30 @@ import java.util.Stack;
 
 import org.lwjgl.util.vector.Vector2f;
 
-public class Path {
+public class Path2 {
 	
 	private ArrayList<Vector2f> path;
-	private Graph graph;
+	private Graph2 graph;
 	private static final float MAX_SEGMENT_LENGTH = 35f;
 	
-	public Path(Graph graph){
-		this.graph = graph;
+	public Path2(){
+		
 	}
 	/**
 	 * Uses the A* algorithm to calculate the shortest path from A to B
 	 */
-	public void findShortestPath(Vector2f start, Vector2f end){
+	public void findShortestPath(Graph2 graph, Vector2f start, Vector2f end){
 		//Initialize start and end node
 		path = new ArrayList<Vector2f>();
+		this.graph = graph;
 		Node startN = new Node(start);
 		Node endN = new Node(end);
 		startN.setEstimatedTotalCost(calcHeuristic(startN, endN));
 		startN.setCurrentCost(0);
 		endN.setEstimatedTotalCost(0);
-		
 		createEdges(graph.getNodes(), startN, endN);
 		
-		//Überprüfe Sortierung, Head = möglichst klein
+		//Überprüfe sortierung, Head = möglichst klein
 		ArrayList<Node> openList = new ArrayList<Node>();
 		openList.add(startN);
 		List<Node> closedList = new LinkedList<Node>();
@@ -149,17 +149,13 @@ public class Path {
 	private void createEdges(ArrayList<Node> nodes, Node startN, Node endN){
 		for(int i = 0; i<nodes.size(); i++){
 			Node currentN = nodes.get(i);
-			if(!graph.intersectsObstacle(startN, currentN)){
-				float weight = Vector2f.sub(currentN.getPoint(), startN.getPoint(), null).length() 
-						+ graph.calcAdditionalWeight(startN, currentN, graph.getSlowZoneIntersections(startN, currentN)) 
-						- graph.calcLessWeight(startN, currentN, graph.getFastZoneIntersections(startN, currentN));
+			if(graph.isFreespace(startN, currentN)){
+				float weight = Vector2f.sub(currentN.getPoint(), startN.getPoint(), null).length();
 				startN.addNode(new Edge2(currentN, weight));
 			}
 			
-			if(!graph.intersectsObstacle(currentN, endN)){
-				float weight = Vector2f.sub(endN.getPoint(), currentN.getPoint(), null).length()
-						+ graph.calcAdditionalWeight(endN, currentN, graph.getSlowZoneIntersections(endN, currentN)) 
-						- graph.calcLessWeight(endN, currentN, graph.getFastZoneIntersections(endN, currentN));
+			if(graph.isFreespace(currentN, endN)){
+				float weight = Vector2f.sub(endN.getPoint(), currentN.getPoint(), null).length();
 				currentN.addNode(new Edge2(endN, weight));
 			}
 		}

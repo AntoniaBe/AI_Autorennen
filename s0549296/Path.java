@@ -168,14 +168,14 @@ public class Path {
 	private void createEdges(ArrayList<Node> nodes, Node startN, Node endN){
 		for(int i = 0; i<nodes.size(); i++){
 			Node currentN = nodes.get(i);
-			if(!graph.intersectsObstacle(startN, currentN)){
+			if(!graph.intersectsObstacle(startN, currentN)&& !graph.intersectsSlowZone(startN, currentN)){
 				float weight = Vector2f.sub(currentN.getPoint(), startN.getPoint(), null).length() 
 						+ graph.calcAdditionalWeight(startN, currentN, graph.getSlowZoneIntersections(startN, currentN)) 
 						- graph.calcLessWeight(startN, currentN, graph.getFastZoneIntersections(startN, currentN));
 				startN.addNode(new Edge2(currentN, weight));
 			}
 			
-			if(!graph.intersectsObstacle(currentN, endN)){
+			if(!graph.intersectsObstacle(currentN, endN)&& !graph.intersectsSlowZone(currentN, endN)){
 				float weight = Vector2f.sub(endN.getPoint(), currentN.getPoint(), null).length()
 						+ graph.calcAdditionalWeight(currentN, endN, graph.getSlowZoneIntersections(endN, currentN)) 
 						- graph.calcLessWeight(currentN, endN, graph.getFastZoneIntersections(endN, currentN));
@@ -186,5 +186,10 @@ public class Path {
 	
 	public ArrayList<Vector2f> getPath(){
 		return path;
+	}
+	
+	//NEW
+	public ArrayList<Node> getNodePath(){
+		return nodePath;
 	}
 }

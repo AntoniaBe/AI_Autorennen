@@ -217,7 +217,7 @@ public class Graph {
 					ArrayList<Vector2f> fzIntersections = getFastZoneIntersections(currentNode, toNode);
 
 					// Berechne Länge der Zonenschnitte
-					if(szIntersections.isEmpty() & fzIntersections.isEmpty())
+					if(szIntersections.isEmpty() && fzIntersections.isEmpty())
 						weight = Vector2f.sub(toNode.getPoint(), currentNode.getPoint(), null).length();
 					else{
 					weight = Vector2f.sub(toNode.getPoint(), currentNode.getPoint(), null).length()
@@ -265,7 +265,7 @@ public class Graph {
 		float lessWeight = 0;
 		if (!sorted.isEmpty()) {
 			if (fastMap.contains(currentNode.getPoint().x, currentNode.getPoint().y)
-					& fastMap.contains(toNode.getPoint().x, toNode.getPoint().y)) {
+					&& fastMap.contains(toNode.getPoint().x, toNode.getPoint().y)) {
 				Vector2f current = currentNode.getPoint();
 				lessWeight += Vector2f.sub(sorted.get(0), current, null).length() / 2;
 				for (int i = 1; i < sorted.size(); i = i + 2) {
@@ -297,7 +297,7 @@ public class Graph {
 					}
 				}
 			}
-		}else if(fastMap.contains(currentNode.getPoint().x, currentNode.getPoint().y) & fastMap.contains(toNode.getPoint().x, toNode.getPoint().y)){
+		}else if(fastMap.contains(currentNode.getPoint().x, currentNode.getPoint().y) && fastMap.contains(toNode.getPoint().x, toNode.getPoint().y)){
 			lessWeight = Vector2f.sub(toNode.getPoint(), currentNode.getPoint(), null).length() * FZ_WEIGHT;
 		}
 		return lessWeight;

@@ -93,7 +93,7 @@ public class Autorennen_PoV2 extends AI {
 			if(currentPath==null){
 				path.findShortestPath(pos, checkpoint);
 				currentPath = path.getPath();
-				betterPath = currentPath;
+				betterPath = path.betterPath(currentPath);
 				if(currentPath==null){
 					action=seek(pos, checkpoint, true);
 				}

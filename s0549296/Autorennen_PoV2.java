@@ -78,7 +78,7 @@ public class Autorennen_PoV2 extends AI {
 		float o = info.getOrientation();
 		
 		//Falls direkter Weg frei
-		if(!graph.intersectsObstacle(new Node(pos), new Node(checkpoint)) & !graph.intersectsSlowZone(new Node(pos), new Node(checkpoint))){
+		if(!graph.intersectsObstacle(new Node(pos), new Node(checkpoint)) && !graph.intersectsSlowZone(new Node(pos), new Node(checkpoint))){
 			action = seek(pos, checkpoint, true);
 		//Falls direkter Weg versperrt
 		}else{

@@ -338,7 +338,7 @@ public class Graph {
 		intersections.sort(new Comparator<Vector2f>() {
 			public int compare(Vector2f a, Vector2f b){
 				float lengthA = Vector2f.sub(a, currentNode.getPoint(), null).length();
-				float lengthB = Vector2f.sub(a, currentNode.getPoint(), null).length();
+				float lengthB = Vector2f.sub(b, currentNode.getPoint(), null).length();
 				int result = Float.compare(lengthA, lengthB);
 				return result;
 			}});
@@ -365,7 +365,7 @@ public class Graph {
 		float additionalWeight = 0;
 		if (!sorted.isEmpty()) {
 			if (slowMap.contains(currentNode.getPoint().x, currentNode.getPoint().y)
-					& slowMap.contains(toNode.getPoint().x, toNode.getPoint().y)) {
+					&& slowMap.contains(toNode.getPoint().x, toNode.getPoint().y)) {
 				Vector2f current = currentNode.getPoint();
 				additionalWeight += Vector2f.sub(sorted.get(0), current, null).length() * SZ_WEIGHT;
 				for (int i = 1; i < sorted.size(); i = i + 2) {

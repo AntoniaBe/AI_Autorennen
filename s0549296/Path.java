@@ -87,6 +87,8 @@ public class Path {
 				nodePath.add(current);
 				current = current.getBefore();
 			}
+			if(!path.isEmpty())
+			path.add(new Vector2f(current.getPoint().x, current.getPoint().y));
 			path = reversePath();
 			nodePath = reverseNodePath();
 		}
@@ -175,8 +177,8 @@ public class Path {
 			
 			if(!graph.intersectsObstacle(currentN, endN)){
 				float weight = Vector2f.sub(endN.getPoint(), currentN.getPoint(), null).length()
-						+ graph.calcAdditionalWeight(endN, currentN, graph.getSlowZoneIntersections(endN, currentN)) 
-						- graph.calcLessWeight(endN, currentN, graph.getFastZoneIntersections(endN, currentN));
+						+ graph.calcAdditionalWeight(currentN, endN, graph.getSlowZoneIntersections(endN, currentN)) 
+						- graph.calcLessWeight(currentN, endN, graph.getFastZoneIntersections(endN, currentN));
 				currentN.addNode(new Edge2(endN, weight));
 			}
 		}

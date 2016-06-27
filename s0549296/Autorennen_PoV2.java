@@ -14,15 +14,11 @@ import lenz.htw.ai4g.ai.Info;
 public class Autorennen_PoV2 extends AI {
 	final static float MAX_SEE_AHEAD = 20f;
 	final static float MAX_AVOIDANCE_FORCE = 10f;
-	final static float TOLERANCE = 0.01f;
-	final static float DECELERATING_DEGREE = 1.5f;
-	final static float WISH_TIME_R = 0.5f;
-	final static float WISH_TIME_D = 0.1f;
-	final static float DESTINATION_RADIUS = 5f;
-	final static float DECELERATING_RADIUS = 50f; //zuvor:10
+	
 	final static float PATH_POINT_RADIUS = 20f;
 	final static float FZ_PATH_POINT_RADIUS = 40f;
 
+	private SteeringBehaviours steering;
 	
 	private Graph graph;
 
@@ -41,12 +37,23 @@ public class Autorennen_PoV2 extends AI {
 
 		graph = new Graph(info.getTrack());
 		path = new Path(graph);
+		steering = new SteeringBehaviours(info);
 	}
 
 
 	@Override
 	public String getName() {
 		return "BURNING DESIRE6";
+	}
+	
+	@Override
+	public boolean isEnabledForRacing(){
+		return true;
+	}
+	
+	@Override
+	public String getTextureResourceName() {
+		return  "/s0549296/flames2.png";
 	}
 	
 	@Override
@@ -61,7 +68,6 @@ public class Autorennen_PoV2 extends AI {
 			}
 		}
 	}
-	
 
 	@Override
 	public DriverAction update(boolean ichWurdeZurückgesetzt) {
@@ -82,7 +88,7 @@ public class Autorennen_PoV2 extends AI {
 		
 		//Falls direkter Weg frei
 		if(!graph.intersectsObstacle(new Node(pos), new Node(checkpoint)) ){
-			action = seek(pos, checkpoint, true);
+			action = steering.seek(pos, checkpoint, true);
 		//Falls direkter Weg versperrt
 		}else{
 			if(ichWurdeZurückgesetzt){
@@ -104,7 +110,7 @@ public class Autorennen_PoV2 extends AI {
 				
 					
 				if(currentPath==null){
-					action=seek(pos, checkpoint, true);
+					action=steering.seek(pos, checkpoint, true);
 				}else{
 					betterPath = path.betterPath(currentPath);
 				}
@@ -129,11 +135,11 @@ public class Autorennen_PoV2 extends AI {
 					}
 				}
 				if(pathIndex<betterPath.size()){
-					action = seek(pos, betterPath.get(pathIndex), currentPath.contains(betterPath.get(pathIndex)));
+					action = steering.seek(pos, betterPath.get(pathIndex), currentPath.contains(betterPath.get(pathIndex)));
 					rv = Vector2f.sub(betterPath.get(pathIndex), pos, null);
 					
 				}else{
-					action = seek(pos, checkpoint, true);
+					action = steering.seek(pos, checkpoint, true);
 				}
 				
 				//NEW
@@ -158,7 +164,7 @@ public class Autorennen_PoV2 extends AI {
 		
 		float degree = (float)Math.atan2(rv.y, rv.x);
 		float diff = degree - o;
-		diff = checkDegree(diff);
+		diff = steering.checkDegree(diff);
 		float abs = (float) rv.length();
 		
 		
@@ -178,81 +184,5 @@ public class Autorennen_PoV2 extends AI {
 		}
 
 		return new DriverAction(action[0], action[1]);
-	}
-	
-	
-	private float checkDegree(float diff){
-		if(diff > Math.PI){
-			diff = (float) ((diff - 2 * Math.PI));
-		}else if ( diff < -Math.PI){
-			diff = (float) ((diff + 2 * Math.PI));
-		}
-		return diff;
-	}
-	
-	private float[] seek(Vector2f start, Vector2f dest, boolean arrive){
-		float[] action = new float[2];
-		
-		float rvX = (float)dest.x - start.x;
-		float rvY = (float)dest.y - start.y;
-		float degree = (float)Math.atan2(rvY, rvX);
-		//für Winkelberechnungen
-		float diff = degree - info.getOrientation();
-		
-		diff = checkDegree(diff);
-		if(arrive){
-			action[0] = arrive(start, dest);
-		}else{
-			action[0]=info.getMaxAcceleration();
-		}
-		action[1] = align(diff);
-		
-		return action;
-	}
-	
-	private float arrive(Vector2f start, Vector2f ziel){
-		Vector2f rv = Vector2f.sub(ziel, start, null);
-		float abs = rv.length();
-		if(abs<DESTINATION_RADIUS){
-			return 0;
-		}else{
-			//Abstand(Start, Ziel) < Abbremsradius
-			float wunschgeschw;
-			if(abs<DECELERATING_RADIUS){
-				wunschgeschw = abs * info.getMaxVelocity()/DECELERATING_RADIUS;
-			}else{
-				wunschgeschw = info.getMaxVelocity();
-			}
-			//Beschleunigung
-			return (float) ((wunschgeschw - info.getVelocity().length())/WISH_TIME_D);
-		}
-	}
-	
-	private float align(float degree){
-		//Winkel zwischen Orientierungen < Toleranz
-		if(Math.abs(degree) < TOLERANCE){
-			return 0;
-		
-		//Winkel zw. Orientierungen < Abbremswinkel
-		}else{
-			float wunschdrehgeschw ;
-			if(Math.abs(degree) < DECELERATING_DEGREE){
-				wunschdrehgeschw = degree * info.getMaxAngularVelocity()/DECELERATING_DEGREE;
-			}else{
-				wunschdrehgeschw = info.getMaxAngularVelocity();
-			}
-			//Beschleunigung
-			return (wunschdrehgeschw - info.getAngularVelocity())/WISH_TIME_R;
-		}
-	}
-	
-	@Override
-	public boolean isEnabledForRacing(){
-		return true;
-	}
-	
-	@Override
-	public String getTextureResourceName() {
-		return  "/s0549296/flames2.png";
-	}
+	}	
 }

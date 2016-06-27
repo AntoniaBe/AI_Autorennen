@@ -176,7 +176,7 @@ public class Graph {
 			type = "slowzone";
 			// Fastzone
 		} else {
-			newPoint = Vector2f.add(currentP, (Vector2f) toMp.negate(null).scale(FZ_SCALE), null);
+			newPoint = Vector2f.add(currentP, (Vector2f) toMp.scale(FZ_SCALE), null);
 			type  = "fastzone";
 		}
 

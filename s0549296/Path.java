@@ -188,7 +188,6 @@ public class Path {
 		return path;
 	}
 	
-	//NEW
 	public ArrayList<Node> getNodePath(){
 		return nodePath;
 	}

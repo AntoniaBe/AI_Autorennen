@@ -24,11 +24,8 @@ public class Autorennen_PoV2 extends AI {
 
 	private Path path;
 	private int pathIndex=0;
-	private float completePathWeight = 0;
 	private ArrayList<Vector2f> currentPath;
-	private ArrayList<Node> currentNodePath;
 	private ArrayList<Vector2f> betterPath;
-	private ArrayList<Node> betterNodePath;
 	private Point currentCP = new Point(-1, -1);
 	
 	
@@ -93,16 +90,12 @@ public class Autorennen_PoV2 extends AI {
 		}else{
 			if(ichWurdeZurückgesetzt){
 				currentPath = null;
-				currentNodePath = null;
-				betterNodePath = null;
 				betterPath = null;
 			}
 			if(currentCP.x != info.getCurrentCheckpoint().x | currentCP.y != info.getCurrentCheckpoint().y){
 
 				currentPath = null;
 				betterPath = null;
-				currentNodePath = null;
-				betterNodePath = null;
 			}
 			if(currentPath==null){
 				path.findShortestPath(pos, checkpoint);
@@ -116,17 +109,6 @@ public class Autorennen_PoV2 extends AI {
 				}
 				currentCP = new Point(info.getCurrentCheckpoint().x, info.getCurrentCheckpoint().y);
 				pathIndex=0;
-//				completePathWeight = 0;
-//				completePathWeight = currentNodePath.get(pathIndex).getCurrentCost();
-				//New
-//				currentNodePath = path.getNodePath();
-//				
-//				System.out.println("First Node:" +currentNodePath.get(pathIndex).getCurrentCost());
-//				//Hier fehl noch das better Path auf Node basis... noch nicht implementiert
-//				
-////				betterNodePath = null;
-//				if(currentNodePath == null)
-//					action = seek(pos, checkpoint, true);
 				
 			}else{
 				if(pathIndex<betterPath.size()){
@@ -141,24 +123,6 @@ public class Autorennen_PoV2 extends AI {
 				}else{
 					action = steering.seek(pos, checkpoint, true);
 				}
-				
-				//NEW
-//				if(pathIndex<currentNodePath.size()){
-//					if((graph.getFastMap().contains(currentNodePath.get(pathIndex).getPoint().x, currentNodePath.get(pathIndex).getPoint().y) && Vector2f.sub(currentNodePath.get(pathIndex).getPoint(), pos, null).length()<(FZ_PATH_POINT_RADIUS)) || Vector2f.sub(currentNodePath.get(pathIndex).getPoint(), pos, null).length()<(PATH_POINT_RADIUS)){
-////						completePathWeight += currentNodePath.get(pathIndex).getCurrentCost();
-//						System.out.println("PathI ADD : " +currentNodePath.get(pathIndex).getCurrentCost());
-//						pathIndex++;
-//						
-//					}
-//				}
-//				if(pathIndex<currentNodePath.size()){
-//					action = seek(pos, currentNodePath.get(pathIndex).getPoint(), currentNodePath.contains(currentNodePath.get(pathIndex).getPoint()));
-//					rv = Vector2f.sub(currentNodePath.get(pathIndex).getPoint(), pos, null);
-//					
-//				}else{
-//					System.out.println("PathI ADD : " +currentNodePath.get(currentNodePath.size()-1).getCurrentCost());
-//					action = seek(pos, checkpoint, true);
-//				}
 			}
 		}
 		

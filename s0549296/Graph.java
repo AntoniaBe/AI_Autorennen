@@ -4,7 +4,6 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 import org.lwjgl.util.vector.Vector2f;
@@ -30,8 +29,6 @@ public class Graph {
 	
 	private static final float SZ_WEIGHT = 100;
 	private static final float FZ_WEIGHT = 0.5f;
-
-	private static final float MIDPOINT_SCALE = 15;
 
 	public Graph(Track t) {
 		// Entnehme Track alle wichtigen Elemente für den Graphen
@@ -163,7 +160,6 @@ public class Graph {
 		Vector2f toMp = Vector2f.sub(mp, currentP, null).normalise(null);
 
 		Vector2f newPoint;
-		Vector2f otherPoint = null;
 		String type;
 		// Obstacle
 		if (num == 0) {
@@ -242,24 +238,7 @@ public class Graph {
 				return result;
 			}});
 		sorted = intersections;
-		
-//		for (int i = 0; i < intersections.size(); i++) {
-//			float distance = Vector2f.sub(intersections.get(i), currentNode.getPoint(), null).length();
-//			if (sorted.isEmpty())
-//				sorted.add(intersections.get(i));
-//			else {
-//				boolean inserted = false;
-//				for (int j = 0; j < sorted.size(); j++) {
-//					if (distance < Vector2f.sub(sorted.get(j), currentNode.getPoint(), null).length()) {
-//						sorted.add(j, intersections.get(i));
-//						inserted = true;
-//					}
-//				}
-//				if (!inserted)
-//					sorted.add(intersections.get(i));
-//			}
-//
-//		}
+	
 		// hier sollten die SPs sortiert in der sorted ArrayList liegen ->
 		// testen
 		float lessWeight = 0;
@@ -324,17 +303,7 @@ public class Graph {
 		ArrayList<Vector2f> sorted = new ArrayList<Vector2f>(intersections.size());
 		// Sortiere SPs nach Abstand zum aktuellen Knoten, kleister in Liste
 		// zuerst
-		
-		
-		//NEW
-//		Collections.sort(intersections, new Comparator<Vector2f>() {
-//			public int compare(Vector2f a, Vector2f b){
-//				float lengthA = Vector2f.sub(a, currentNode.getPoint(), null).length();
-//				float lengthB = Vector2f.sub(a, currentNode.getPoint(), null).length();
-//				int result = Float.compare(lengthA, lengthB);
-//				return result;
-//			}
-//		});
+	
 		intersections.sort(new Comparator<Vector2f>() {
 			public int compare(Vector2f a, Vector2f b){
 				float lengthA = Vector2f.sub(a, currentNode.getPoint(), null).length();
@@ -343,23 +312,7 @@ public class Graph {
 				return result;
 			}});
 		sorted = intersections;
-//		for (int i = 0; i < intersections.size(); i++) {
-//			float distance = Vector2f.sub(intersections.get(i), currentNode.getPoint(), null).length();
-//			if (sorted.isEmpty())
-//				sorted.add(intersections.get(i));
-//			else {
-//				boolean inserted = false;
-//				for (int j = 0; j < sorted.size(); j++) {
-//					if (distance < Vector2f.sub(sorted.get(j), currentNode.getPoint(), null).length()) {
-//						sorted.add(j, intersections.get(i));
-//						inserted = true;
-//					}
-//				}
-//				if (!inserted)
-//					sorted.add(intersections.get(i));
-//			}
-//
-//		}
+
 		// hier sollten die SPs sortiert in der sorted ArrayList liegen ->
 		// testen
 		float additionalWeight = 0;
